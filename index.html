@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan de Contenido — Inmobiliaria</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A96E;
+    --gold-light: #E8D5B0;
+    --dark: #0D0D0D;
+    --dark-2: #161616;
+    --dark-3: #1F1F1F;
+    --cream: #F5F0E8;
+    --white: #FFFFFF;
+    --tiktok: #FF0050;
+    --instagram: #E1306C;
+    --youtube: #FF0000;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(201,169,110,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(201,169,110,0.08) 0%, transparent 50%);
+  }
+
+  .hero-line {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    opacity: 0.2;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(201,169,110,0.3);
+    padding: 0.4rem 1.2rem;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.3s forwards;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 1.1;
+    font-weight: 700;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.5s forwards;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    color: rgba(245,240,232,0.6);
+    font-weight: 300;
+    max-width: 420px;
+    line-height: 1.7;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.7s forwards;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.5s forwards;
+  }
+
+  .scroll-hint span {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.4);
+  }
+
+  .scroll-dot {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 1.5s ease infinite;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 5rem 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+
+  .section-label.visible { opacity: 1; transform: translateY(0); }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    line-height: 1.2;
+    margin-bottom: 3rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease 0.1s;
+  }
+
+  .section-title.visible { opacity: 1; transform: translateY(0); }
+
+  /* PILARES */
+  .pilares-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: rgba(201,169,110,0.15);
+    border: 1px solid rgba(201,169,110,0.15);
+  }
+
+  .pilar {
+    background: var(--dark-2);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+    cursor: default;
+  }
+
+  .pilar.visible { opacity: 1; transform: translateY(0); }
+
+  .pilar::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .pilar:hover::before { transform: scaleX(1); }
+  .pilar:hover { background: var(--dark-3); }
+
+  .pilar-icon {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .pilar-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .pilar-desc {
+    font-size: 0.85rem;
+    color: rgba(245,240,232,0.55);
+    line-height: 1.6;
+  }
+
+  /* CALENDARIO */
+  .semanas {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .semana {
+    border: 1px solid rgba(201,169,110,0.15);
+    background: var(--dark-2);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: all 0.6s ease;
+  }
+
+  .semana.visible { opacity: 1; transform: translateX(0); }
+
+  .semana-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid rgba(201,169,110,0.1);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .semana-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: rgba(201,169,110,0.3);
+    font-weight: 700;
+    min-width: 40px;
+  }
+
+  .semana-titulo {
+    flex: 1;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--cream);
+  }
+
+  .semana-toggle {
+    font-size: 0.8rem;
+    color: var(--gold);
+    transition: transform 0.3s ease;
+  }
+
+  .semana-toggle.open { transform: rotate(180deg); }
+
+  .semana-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+
+  .semana-body.open { max-height: 600px; }
+
+  .dias {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: rgba(201,169,110,0.08);
+    padding: 1px;
+  }
+
+  .dia {
+    background: var(--dark);
+    padding: 1rem 1.2rem;
+  }
+
+  .dia-nombre {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .dia-contenido {
+    font-size: 0.82rem;
+    color: rgba(245,240,232,0.75);
+    line-height: 1.5;
+  }
+
+  .plataforma-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 100px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+  }
+
+  .badge-tiktok { background: rgba(255,0,80,0.15); color: #FF0050; border: 1px solid rgba(255,0,80,0.3); }
+  .badge-instagram { background: rgba(225,48,108,0.15); color: #E1306C; border: 1px solid rgba(225,48,108,0.3); }
+  .badge-youtube { background: rgba(255,0,0,0.12); color: #FF4444; border: 1px solid rgba(255,0,0,0.25); }
+  .badge-story { background: rgba(201,169,110,0.15); color: var(--gold); border: 1px solid rgba(201,169,110,0.3); }
+
+  /* PROCESO */
+  .proceso-steps {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .proceso-steps::before {
+    content: '';
+    position: absolute;
+    left: 7px; top: 8px;
+    width: 1px;
+    height: calc(100% - 16px);
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  .step {
+    position: relative;
+    padding: 0 0 2.5rem 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+
+  .step.visible { opacity: 1; transform: translateY(0); }
+
+  .step::before {
+    content: '';
+    position: absolute;
+    left: -1.95rem;
+    top: 6px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--dark);
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 10px rgba(201,169,110,0.4);
+  }
+
+  .step-num {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .step-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: var(--cream);
+  }
+
+  .step-desc {
+    font-size: 0.85rem;
+    color: rgba(245,240,232,0.55);
+    line-height: 1.7;
+  }
+
+  /* PRECIO */
+  .precio-card {
+    border: 1px solid rgba(201,169,110,0.3);
+    background: linear-gradient(135deg, var(--dark-2) 0%, var(--dark-3) 100%);
+    padding: 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.96);
+    transition: all 0.7s ease;
+  }
+
+  .precio-card.visible { opacity: 1; transform: scale(1); }
+
+  .precio-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  .precio-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 5rem);
+    color: var(--gold);
+    line-height: 1;
+    margin: 1rem 0 0.5rem;
+  }
+
+  .precio-period {
+    font-size: 0.85rem;
+    color: rgba(245,240,232,0.4);
+    letter-spacing: 0.1em;
+    margin-bottom: 2.5rem;
+  }
+
+  .precio-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    text-align: left;
+    max-width: 380px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .precio-items li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    font-size: 0.9rem;
+    color: rgba(245,240,232,0.75);
+  }
+
+  .precio-items li::before {
+    content: '—';
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .cta-btn {
+    display: inline-block;
+    padding: 0.9rem 2.5rem;
+    background: var(--gold);
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .cta-btn:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(201,169,110,0.3);
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    border-top: 1px solid rgba(201,169,110,0.1);
+    font-size: 0.75rem;
+    color: rgba(245,240,232,0.25);
+    letter-spacing: 0.1em;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 0 auto 4rem;
+    opacity: 0.4;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  /* FLOATING PARTICLES */
+  .particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: float linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-10vh) translateX(30px); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Particles -->
+<div class="particles" id="particles"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <div class="tag">Plan de Contenido Digital 2026</div>
+  <h1>Tu presencia en<br>redes, <em>diseñada</em><br>con estrategia</h1>
+  <p class="hero-sub">Un plan completo para posicionar tu agencia inmobiliaria en TikTok, Instagram y YouTube desde cero.</p>
+  <div class="scroll-hint">
+    <span>Explorar</span>
+    <div class="scroll-dot"></div>
+  </div>
+</div>
+
+<!-- PILARES -->
+<section>
+  <div class="section-label reveal">Los 5 pilares</div>
+  <div class="section-title reveal">Cada publicación<br>tiene un propósito</div>
+  <div class="pilares-grid">
+    <div class="pilar reveal">
+      <div class="pilar-icon">🏡</div>
+      <div class="pilar-name">Propiedades</div>
+      <div class="pilar-desc">Tours, fotos y características del inventario disponible.</div>
+    </div>
+    <div class="pilar reveal">
+      <div class="pilar-icon">🧠</div>
+      <div class="pilar-name">Educación</div>
+      <div class="pilar-desc">Tips y guías que posicionan a Steph como experta en bienes raíces.</div>
+    </div>
+    <div class="pilar reveal">
+      <div class="pilar-icon">💬</div>
+      <div class="pilar-name">Confianza</div>
+      <div class="pilar-desc">Testimonios y casos de éxito que generan credibilidad.</div>
+    </div>
+    <div class="pilar reveal">
+      <div class="pilar-icon">🎭</div>
+      <div class="pilar-name">Entretenimiento</div>
+      <div class="pilar-desc">Contenido viral y tendencias para ampliar el alcance.</div>
+    </div>
+    <div class="pilar reveal">
+      <div class="pilar-icon">👩‍💼</div>
+      <div class="pilar-name">Marca Personal</div>
+      <div class="pilar-desc">Historia, día a día y valores para conectar emocionalmente.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CALENDARIO -->
+<section>
+  <div class="section-label reveal">Semana a semana</div>
+  <div class="section-title reveal">Calendario del<br>primer mes</div>
+  <div class="semanas">
+
+    <div class="semana reveal">
+      <div class="semana-header" onclick="toggleSemana(this)">
+        <div class="semana-num">01</div>
+        <div class="semana-titulo">Presentación — ¿Quién eres?</div>
+        <div class="semana-toggle">▼</div>
+      </div>
+      <div class="semana-body">
+        <div class="dias">
+          <div class="dia">
+            <div class="dia-nombre">Lunes</div>
+            <div class="plataforma-badge badge-tiktok">TikTok</div>
+            <div class="dia-contenido">Video de presentación: quién soy, qué hago y cómo te puedo ayudar</div>
+          </div>
+          <div class="dia">
+            <div class="dia-nombre">Miércoles</div>
+            <div class="plataforma-badge badge-instagram">Reels</div>
+            <div class="dia-contenido">¿Rentar o comprar? El dilema que todos tienen — respuesta en 60 seg</div>
+          </div>
+          <div class="dia">
+            <div class="dia-nombre">Viernes</div>
+            <div class="plataforma-badge badge-youtube">YouTube</div>
+            <div class="dia-contenido">Guía completa: cómo encontrar tu primera propiedad en renta</div>
+          </div>
+          <div class="dia">
+            <div class="dia-nombre">Diario</div>
+            <div class="plataforma-badge badge-story">Stories</div>
+            <div class="dia-contenido">Encuestas, preguntas y propiedad del día</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="semana reveal">
+      <div class="semana-header" onclick="toggleSemana(this)">
+        <div class="semana-num">02</div>
+        <div class="semana-titulo">Educación — Conviértete en referente</div>
+        <div class="semana-toggle">▼</div>
+      </div>
+      <div class="semana-body">
+        <div class="dias">
+          <div class="dia">
+            <div class="dia-nombre">Lunes</div>
+            <div class="plataforma-badge badge-tiktok">TikTok</div>
+            <div class="dia-contenido">3 errores que comete la gente al rentar un departamento</div>
+          </div>
+          <div class="dia">
+            <div class="dia-nombre">Miércoles</div>
+            <div class="plataforma-badge badge-instagram">Reels</div>
+            <div class="dia-contenido">¿Cuánto cuesta vivir en [zona]? Desglose real</div>
+          </div>
+          <div class="dia">
+            <div class="dia-nombre">Viernes</div>
+            <div class="plataforma-badge badge-youtube">YouTube</div>
+            <div class="dia-contenido">Tour virtual de propiedad con voz IA y descripción completa</div>
+          </div>
+          <div class="dia">
+            <div class="dia-nombre">Diario</div>
+            <div class="plataforma-badge badge-story">Stories</div>
+            <div class="dia-contenido">Tips del día, preguntas frecuentes, detrás de cámaras</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="semana reveal">
+      <div class="semana-header" onclick="toggleSemana(this)">
+        <div class="semana-num">03</div>
+        <div class="semana-titulo">Propiedades — Muestra lo que tienes</div>
+        <div class="semana-toggle">▼</div>
+      </div>
+      <div class="semana-body">
+        <div class="dias">
+          <div class="dia">
+            <div class="dia-nombre">Lunes</div>
+            <div class="plataforma-badge badge-tiktok">TikTok</div>
+            <div class="dia-contenido">Tour rápido de propiedad en 60 seg con música de tendencia</div>
+          </div>
+          <div class="dia">
+            <div class="dia-nombre">Miércoles</div>
+            <div class="plataforma-badge badge-instagram">Reels</div>
+            <div class="dia-contenido">POV: te estoy buscando departamento — proceso real</div>
+          </div>
+          <div class="dia">
+            <div class="dia-nombre">Viernes</div>
+            <div class="plataforma-badge badge-youtube">YouTube</div>
+            <div class="dia-contenido">¿Qué revisar antes de firmar un contrato? Checklist completo</div>
+          </div>
+          <div class="dia">
+            <div class="dia-nombre">Diario</div>
+            <div class="plataforma-badge badge-story">Stories</div>
+            <div class="dia-contenido">Fotos de propiedades, precios del mercado, novedades</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="semana reveal">
+      <div class="semana-header" onclick="toggleSemana(this)">
+        <div class="semana-num">04</div>
+        <div class="semana-titulo">Confianza — Humaniza la marca</div>
+        <div class="semana-toggle">▼</div>
+      </div>
+      <div class="semana-body">
+        <div class="dias">
+          <div class="dia">
+            <div class="dia-nombre">Lunes</div>
+            <div class="plataforma-badge badge-tiktok">TikTok</div>
+            <div class="dia-contenido">Testimonio de cliente: cómo encontró su departamento ideal</div>
+          </div>
+          <div class="dia">
+            <div class="dia-nombre">Miércoles</div>
+            <div class="plataforma-badge badge-instagram">Reels</div>
+            <div class="dia-contenido">Mi historia: por qué me dedico a los bienes raíces</div>
+          </div>
+          <div class="dia">
+            <div class="dia-nombre">Viernes</div>
+            <div class="plataforma-badge badge-youtube">YouTube</div>
+            <div class="dia-contenido">Guía para invertir en bienes raíces con poco capital</div>
+          </div>
+          <div class="dia">
+            <div class="dia-nombre">Diario</div>
+            <div class="plataforma-badge badge-story">Stories</div>
+            <div class="dia-contenido">Recap del mes, logros, agradecimientos a seguidores</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROCESO -->
+<section>
+  <div class="section-label reveal">Cómo trabajamos</div>
+  <div class="section-title reveal">El proceso<br>mes a mes</div>
+  <div class="proceso-steps">
+    <div class="step reveal">
+      <div class="step-num">Paso 01</div>
+      <div class="step-title">Grabas en vertical</div>
+      <div class="step-desc">Con el teléfono parado, en buena luz, siguiendo el guión de la semana. Sin equipo especial — solo el celular y naturalidad.</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">Paso 02</div>
+      <div class="step-title">Envía el material</div>
+      <div class="step-desc">Manda los videos y las especificaciones de la propiedad (si aplica) por WhatsApp o Google Drive.</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">Paso 03</div>
+      <div class="step-title">Edición y producción</div>
+      <div class="step-desc">Se editan los videos, se agrega voz IA donde se necesite, subtítulos, música y se exporta en calidad máxima para cada plataforma.</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">Paso 04</div>
+      <div class="step-title">Revisión y entrega</div>
+      <div class="step-desc">Revisas y apruebas. Se entrega el video listo para publicar con el texto, hashtags y hora sugerida.</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">Paso 05</div>
+      <div class="step-title">Publicación y seguimiento</div>
+      <div class="step-desc">Publicas según el calendario. Al final del mes se revisan las métricas para ajustar la estrategia del siguiente mes.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRECIO -->
+<section>
+  <div class="section-label reveal">Inversión</div>
+  <div class="section-title reveal">Un solo paquete,<br>todo incluido</div>
+  <div class="precio-card reveal">
+    <div class="tag">Paquete mensual</div>
+    <div class="precio-amount">$3,500</div>
+    <div class="precio-period">MXN / mes</div>
+    <ul class="precio-items">
+      <li>4 videos para YouTube (edición + voz IA + calidad máxima)</li>
+      <li>8 TikToks o Reels listos para publicar</li>
+      <li>Redacción de descripción de propiedad (hasta 1 por mes)</li>
+      <li>Calendario de contenido mensual</li>
+      <li>Guiones e ideas para cada video</li>
+    </ul>
+    <div style="font-size:0.78rem; color:rgba(245,240,232,0.35); margin-bottom:2rem;">Precio de lanzamiento · Revisión a los 3 meses según resultados</div>
+  </div>
+</section>
+
+<footer>
+  Elaborado con estrategia · Agencia Inmobiliaria · 2026
+</footer>
+
+<script>
+  // Particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.animationDuration = (8 + Math.random() * 12) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    p.style.opacity = Math.random() * 0.5;
+    container.appendChild(p);
+  }
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Semana toggle
+  function toggleSemana(header) {
+    const body = header.nextElementSibling;
+    const toggle = header.querySelector('.semana-toggle');
+    body.classList.toggle('open');
+    toggle.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
