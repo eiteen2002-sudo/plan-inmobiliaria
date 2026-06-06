@@ -1,13 +1,278 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="1122 Living Inmobiliaria — Propiedades de lujo" />
-    <title>1122 Living</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1122 Living Inmobiliaria</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFAF8; --bg2: #F2EDE6; --text: #1A1A1A; --muted: #6B6560;
+      --accent: #C4A882; --accent-dk: #A88B68; --white: #FFFFFF; --border: #E8E2DA;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; line-height: 1.6; overflow-x: hidden; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1rem 5%; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(250,250,248,0.96); backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border); transition: box-shadow .3s;
+    }
+    nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,.08); }
+    .logo-img { height: 52px; width: auto; object-fit: contain; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { text-decoration: none; font-size: .82rem; font-weight: 500; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { padding: .55rem 1.4rem; background: var(--text); color: var(--white) !important; border-radius: 2px; transition: background .25s !important; }
+    .nav-cta:hover { background: var(--accent-dk) !important; }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); transition: all .3s; }
+    .mobile-menu { display: none; position: fixed; top: 74px; left: 0; right: 0; z-index: 99; background: var(--white); border-bottom: 1px solid var(--border); padding: 1.5rem 5%; flex-direction: column; gap: 1.2rem; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { text-decoration: none; font-size: .9rem; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+    @media(max-width:768px) { .nav-links { display: none; } .nav-hamburger { display: flex; } }
+
+    .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem; padding: 0 5%; padding-top: 90px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: .6rem; font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; color: var(--accent-dk); margin-bottom: 1.4rem; }
+    .eyebrow::before { content: ""; display: block; width: 28px; height: 1px; background: var(--accent-dk); }
+    .hero h1 { font-family: "Cormorant Garamond", serif; font-size: clamp(2.6rem, 5vw, 4.4rem); font-weight: 300; line-height: 1.1; margin-bottom: 1.4rem; }
+    .hero h1 em { font-style: italic; color: var(--accent-dk); }
+    .hero-desc { font-size: 1rem; color: var(--muted); max-width: 440px; margin-bottom: 2.2rem; line-height: 1.75; }
+    .hero-btns { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    .btn-dark { display: inline-flex; align-items: center; gap: .5rem; padding: .95rem 2rem; background: var(--text); color: var(--white); font-size: .82rem; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; text-decoration: none; transition: all .3s; }
+    .btn-dark:hover { background: var(--accent-dk); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(168,139,104,.3); }
+    .btn-outline { display: inline-flex; align-items: center; gap: .5rem; padding: .95rem 1.5rem; color: var(--text); font-size: .82rem; font-weight: 500; letter-spacing: .06em; text-decoration: none; border-bottom: 1px solid currentColor; transition: color .3s; }
+    .btn-outline:hover { color: var(--accent-dk); }
+    .hero-visual { position: relative; height: 580px; }
+    .hero-img-box { width: 100%; height: 100%; background: linear-gradient(145deg, #E8DDD0, #C8B8A2); border-radius: 2px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .hero-img-box img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-placeholder { display: flex; flex-direction: column; align-items: center; gap: .5rem; color: rgba(255,255,255,.55); text-align: center; }
+    .hero-placeholder .ph-icon { font-size: 3rem; }
+    .hero-placeholder span { font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; }
+    .hero-badge { position: absolute; bottom: 2rem; left: -2rem; background: var(--white); padding: 1.2rem 1.8rem; box-shadow: 0 20px 50px rgba(0,0,0,.12); border-left: 3px solid var(--accent); }
+    .badge-num { font-family: "Cormorant Garamond", serif; font-size: 2.2rem; font-weight: 600; line-height: 1; }
+    .badge-lbl { font-size: .72rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-top: .2rem; }
+
+    section { padding: 6rem 5%; }
+    .sec-eyebrow { display: inline-flex; align-items: center; gap: .6rem; font-size: .7rem; letter-spacing: .25em; text-transform: uppercase; color: var(--accent-dk); margin-bottom: .8rem; }
+    .sec-eyebrow::before { content: ""; display: block; width: 22px; height: 1px; background: var(--accent-dk); }
+    .sec-title { font-family: "Cormorant Garamond", serif; font-size: clamp(1.9rem, 3.5vw, 3rem); font-weight: 300; line-height: 1.2; }
+    .sec-title em { font-style: italic; color: var(--accent-dk); }
+
+    .nosotros-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .nosotros-img-wrap { position: relative; }
+    .nosotros-accent { position: absolute; top: 2rem; right: -1.5rem; width: 70px; height: 70px; background: var(--accent); opacity: .25; }
+    .nosotros-photo { width: 100%; aspect-ratio: 3/4; background: linear-gradient(180deg, #E8DDD0, #C8B8A2); border-radius: 2px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.4); font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; }
+    .nosotros-text p { color: var(--muted); line-height: 1.8; margin-bottom: 1.4rem; font-size: .96rem; }
+    .stats-box { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; padding: 1.8rem 2rem; background: var(--bg2); border-left: 3px solid var(--accent); margin-top: 2rem; }
+    .stat-n { font-family: "Cormorant Garamond", serif; font-size: 2.4rem; font-weight: 600; line-height: 1; }
+    .stat-l { font-size: .75rem; color: var(--muted); letter-spacing: .05em; margin-top: .25rem; }
+
+    .servicios { background: var(--text); }
+    .servicios .sec-eyebrow { color: var(--accent); }
+    .servicios .sec-eyebrow::before { background: var(--accent); }
+    .servicios .sec-title { color: var(--white); }
+    .servicios-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(255,255,255,.08); margin-top: 3rem; }
+    .serv-card { background: var(--text); padding: 2.5rem; transition: background .3s; position: relative; overflow: hidden; }
+    .serv-card::after { content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform .35s; }
+    .serv-card:hover { background: #252525; }
+    .serv-card:hover::after { transform: scaleX(1); }
+    .serv-icon { font-size: 1.8rem; margin-bottom: 1.2rem; }
+    .serv-title { font-family: "Cormorant Garamond", serif; font-size: 1.2rem; color: #FAFAF8; margin-bottom: .7rem; }
+    .serv-desc { font-size: .84rem; color: rgba(250,250,248,.5); line-height: 1.7; }
+
+    .test-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.4rem; margin-top: .5rem; }
+    .test-card { background: var(--white); padding: 2rem; border: 1px solid var(--border); border-radius: 2px; transition: transform .3s, box-shadow .3s; }
+    .test-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,.08); }
+    .test-stars { color: var(--accent-dk); font-size: .9rem; letter-spacing: .08em; margin-bottom: .9rem; }
+    .test-text { font-size: .88rem; color: var(--muted); line-height: 1.75; font-style: italic; margin-bottom: 1.4rem; }
+    .test-author { display: flex; align-items: center; gap: .8rem; }
+    .author-av { width: 40px; height: 40px; background: var(--bg2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: "Cormorant Garamond", serif; font-size: 1.05rem; color: var(--accent-dk); font-weight: 600; }
+    .author-name { font-size: .84rem; font-weight: 600; }
+    .author-sub { font-size: .74rem; color: var(--muted); }
+
+    .contacto { background: var(--bg2); }
+    .contacto-inner { max-width: 680px; margin: 0 auto; text-align: center; }
+    .contacto-inner .sec-eyebrow { justify-content: center; }
+    .contacto-inner .sec-eyebrow::before { display: none; }
+    .contacto-desc { color: var(--muted); margin: 1rem 0 2.4rem; line-height: 1.75; }
+    .wa-btn { display: inline-flex; align-items: center; gap: .75rem; padding: 1.05rem 2.5rem; background: #25D366; color: var(--white); font-size: .92rem; font-weight: 600; text-decoration: none; border-radius: 2px; transition: all .3s; box-shadow: 0 8px 24px rgba(37,211,102,.28); }
+    .wa-btn:hover { background: #128C7E; transform: translateY(-2px); }
+    .wa-icon { font-size: 1.3rem; }
+    .contacto-alt { margin-top: 1.8rem; font-size: .83rem; color: var(--muted); }
+    .contacto-alt a { color: var(--accent-dk); text-decoration: none; font-weight: 500; }
+
+    footer { background: var(--text); color: rgba(250,250,248,.4); padding: 2.5rem 5%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-brand { font-family: "Cormorant Garamond", serif; font-size: 1.1rem; color: var(--white); font-weight: 600; letter-spacing: .06em; }
+    footer p { font-size: .76rem; }
+
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media(max-width:900px) {
+      .hero { grid-template-columns: 1fr; padding-top: 100px; gap: 2.5rem; }
+      .hero-visual { height: 360px; }
+      .hero-badge { left: 1rem; }
+      .nosotros-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .servicios-grid { grid-template-columns: 1fr; }
+      .test-grid { grid-template-columns: 1fr; }
+    }
+    @media(max-width:600px) { section { padding: 4rem 5%; } }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <img class="logo-img" src="data:image/jpeg;base64,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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//9oADAMBAAIAAwAAACEzzyhzzzzzwjDDzjjyzxTwhDDDDjDjTTDCRDjzzzzzTyzxzxwjDzzzzjDTzzzjzjTTzjzwwzzDzywxzzDQwSzzzTwxSwwzxixTjygxzCRzTywiAgDjSwyzQwQxywTziwwxzhgDxzjDSwBxzzzDCzxjTDQyAgRzwzxDizDjxzzzzzwzAxyAThiRzjTywwxwxjTSAxyzzDTjCAzyyQwzzjjTwTjTxyzjzyjhwRTzzxzzziTzwjzwzjBjywAxzyxDjAyDTzzhywzSQgDzjxzzjDQzCDADDyChzzzywzxzhDTwyTTgQwhTzjywgTTiTzzgQTiRxzDgABDzzDzziQxjTyxwxjDzjyDzzhDzzyxzjTiDDTzAhzQwAgjygTzzDDBCATCwjCRiQwwxzzDzzxjDjDDTzzjQzjDzzzzzzCzTBwhDDDQwCBjDCzzzgRjDTiTjSxzzwDyzjTzDCTzzyzjQxziTzjRzzwxzzyxyBTAAxhzxywzzzzTywBTjDwwRzzSzjDzTzzDTxzzzwzyBTQzzzzwzwjRwgwwzyzwxyzwxwxzwzzxyQDRzzTzzwwxwjywwAzyjDTzSjQzDyzzzwjDDDDyzzwjADwjDDzjTCBThSwwwzihDDThRywgzzzzzwxzTwzzgCTDDDTxzzzCAQAAAzywwwizzzxjDzTTzyxDDjyzzixzzzzxwTTxzzzDTzzzzjTzDCwwjzzzyxzwwgRzzzzzxiwwwjDTDCyhzCAzzwgCQxzjzwwzxzDygxABhTyzwzxzz" alt="1122 Living Inmobiliaria
+  <ul class="nav-links">
+    <li><a href="#nosotros">Nosotros</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#testimonios">Testimonios</a></li>
+    <li><a href="#contacto" class="nav-cta">Cont&#225;ctanos</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="Men&#250;">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#nosotros" onclick="closeMobile()">Nosotros</a>
+  <a href="#servicios" onclick="closeMobile()">Servicios</a>
+  <a href="#testimonios" onclick="closeMobile()">Testimonios</a>
+  <a href="#contacto" onclick="closeMobile()">Cont&#225;ctanos</a>
+</div>
+
+<section id="inicio" class="hero">
+  <div class="hero-content">
+    <div class="eyebrow">Inmobiliaria de Confianza</div>
+    <h1>Encuentra el hogar<br>que <em>mereces</em><br>vivir</h1>
+    <p class="hero-desc">En 1122 Living te acompa&#241;amos en cada paso: desde la b&#250;squeda hasta la firma del contrato. Asesor&#237;a personalizada, sin complicaciones.</p>
+    <div class="hero-btns">
+      <a href="#contacto" class="btn-dark">Hablar con un asesor &#8594;</a>
+      <a href="#servicios" class="btn-outline">Ver servicios</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-img-box">
+      <div class="hero-placeholder">
+        <div class="ph-icon">&#127962;</div>
+        <span>Agrega tu foto de portada</span>
+      </div>
+    </div>
+    <div class="hero-badge">
+      <div class="badge-num">200+</div>
+      <div class="badge-lbl">Clientes satisfechos</div>
+    </div>
+  </div>
+</section>
+
+<section id="nosotros">
+  <div class="nosotros-grid">
+    <div class="nosotros-img-wrap">
+      <div class="nosotros-accent"></div>
+      <div class="nosotros-photo">Agrega tu foto</div>
+    </div>
+    <div class="nosotros-text">
+      <div class="sec-eyebrow reveal">Sobre nosotros</div>
+      <h2 class="sec-title reveal" style="margin-bottom:1.5rem;">Tu agente de confianza<br>en bienes <em>ra&#237;ces</em></h2>
+      <p class="reveal">Somos 1122 Living, una inmobiliaria comprometida con ayudarte a encontrar la propiedad que se adapte perfectamente a tu estilo de vida y presupuesto.</p>
+      <p class="reveal">Con a&#241;os de experiencia en el mercado inmobiliario, te guiamos en cada paso del proceso &#8212; con honestidad y transparencia.</p>
+      <div class="stats-box reveal">
+        <div><div class="stat-n">200+</div><div class="stat-l">Clientes satisfechos</div></div>
+        <div><div class="stat-n">5+</div><div class="stat-l">A&#241;os de experiencia</div></div>
+        <div><div class="stat-n">50+</div><div class="stat-l">Propiedades activas</div></div>
+        <div><div class="stat-n">100%</div><div class="stat-l">Atenci&#243;n personalizada</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="servicios" class="servicios">
+  <div class="sec-eyebrow reveal">Lo que hacemos</div>
+  <h2 class="sec-title reveal" style="margin-bottom:0;">Servicios pensados<br>para <em>simplificarte</em> la vida</h2>
+  <div class="servicios-grid">
+    <div class="serv-card reveal">
+      <div class="serv-icon">&#127968;</div>
+      <div class="serv-title">Compra de propiedades</div>
+      <div class="serv-desc">Te ayudamos a encontrar y adquirir la propiedad ideal. Negociamos por ti para conseguir el mejor precio del mercado.</div>
+    </div>
+    <div class="serv-card reveal">
+      <div class="serv-icon">&#128273;</div>
+      <div class="serv-title">Renta y arrendamiento</div>
+      <div class="serv-desc">Encuentra tu departamento o casa en renta con contratos claros, seguros y sin sorpresas. Asesor&#237;a completa.</div>
+    </div>
+    <div class="serv-card reveal">
+      <div class="serv-icon">&#128202;</div>
+      <div class="serv-title">Asesor&#237;a de inversi&#243;n</div>
+      <div class="serv-desc">&#191;Quieres invertir en bienes ra&#237;ces? Te orientamos para maximizar tu rendimiento con las mejores oportunidades.</div>
+    </div>
+  </div>
+</section>
+
+<section id="testimonios">
+  <div class="sec-eyebrow reveal">Testimonios</div>
+  <h2 class="sec-title reveal" style="margin-bottom:2.5rem;">Lo que dicen<br>nuestros <em>clientes</em></h2>
+  <div class="test-grid">
+    <div class="test-card reveal">
+      <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="test-text">"Encontr&#233; mi departamento ideal en menos de dos semanas. La atenci&#243;n fue incre&#237;ble, me explicaron todo sin que me perdiera en ning&#250;n momento."</p>
+      <div class="test-author">
+        <div class="author-av">A</div>
+        <div><div class="author-name">Ana Garc&#237;a</div><div class="author-sub">Compr&#243; en CDMX</div></div>
+      </div>
+    </div>
+    <div class="test-card reveal">
+      <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="test-text">"Excelente servicio. Me ayudaron a invertir con muy buen rendimiento. 100% recomendados &#8212; honestos, profesionales y muy atentos."</p>
+      <div class="test-author">
+        <div class="author-av">R</div>
+        <div><div class="author-name">Roberto M.</div><div class="author-sub">Inversionista</div></div>
+      </div>
+    </div>
+    <div class="test-card reveal">
+      <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="test-text">"Buscaba departamento para rentar y en una semana ya ten&#237;a llaves. El contrato fue claro, sin letras peque&#241;as. Muy agradecida."</p>
+      <div class="test-author">
+        <div class="author-av">V</div>
+        <div><div class="author-name">Valentina R.</div><div class="author-sub">Rent&#243; en Guadalajara</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contacto" class="contacto">
+  <div class="contacto-inner">
+    <div class="sec-eyebrow reveal">Cont&#225;ctanos</div>
+    <h2 class="sec-title reveal">&#191;Listo para encontrar<br>tu pr&#243;xima <em>propiedad</em>?</h2>
+    <p class="contacto-desc reveal">Escr&#237;benos por WhatsApp y un asesor te responder&#225; en minutos. Sin compromisos, con toda la informaci&#243;n que necesitas.</p>
+    <a href="https://wa.me/521XXXXXXXXXX?text=Hola%2C%20me%20interesa%20una%20propiedad%20con%201122%20Living"
+       class="wa-btn reveal" target="_blank" rel="noopener">
+      <span class="wa-icon">&#128172;</span>
+      <span>Escr&#237;benos por WhatsApp</span>
+    </a>
+    <p class="contacto-alt reveal">
+      Tambi&#233;n puedes encontrarnos en <a href="#">Instagram</a> &amp; <a href="#">TikTok</a>
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">1122 Living</div>
+  <p>&#169; 2026 1122 Living Inmobiliaria &middot; Todos los derechos reservados</p>
+</footer>
+
+<script>
+  const nav = document.getElementById("navbar");
+  window.addEventListener("scroll", () => nav.classList.toggle("scrolled", scrollY > 20));
+  const hamburger = document.getElementById("hamburger");
+  const mobileMenu = document.getElementById("mobileMenu");
+  hamburger.addEventListener("click", () => mobileMenu.classList.toggle("open"));
+  function closeMobile() { mobileMenu.classList.remove("open"); }
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("visible"); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+</script>
+</body>
 </html>
