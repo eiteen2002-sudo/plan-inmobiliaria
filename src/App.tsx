@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
+import { BedDouble, Bath, Maximize2, ArrowRight } from 'lucide-react';
 
 // ─── Brand Tokens ─────────────────────────────────────────────────────────────
 const PRIMARY_BLACK = '#1c1b18';
 const ACCENT_GOLD   = '#bfa37a';
 const LIGHT_BEIGE   = '#f5efe4';
 
-// ─── Logo URLs — replace with your hosted versions ───────────────────────────
-const LOGO_DARK  = 'REPLACE_WITH_DARK_LOGO_URL';   // color logo on light BG
-const LOGO_LIGHT = 'REPLACE_WITH_LIGHT_LOGO_URL';  // white logo on dark BG
+// ─── Logo ────────────────────────────────────────────────────────────────────
+const LOGO = 'https://i.postimg.cc/gjr3HDK7/Logo.jpg';
 
 // ─── Hero BG ─────────────────────────────────────────────────────────────────
 const BG_IMG = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260603_073200_7082add5-f1f8-4873-8696-d6f78a44089b.png&w=1920&q=85';
@@ -20,6 +20,57 @@ const LIFT_AT       = TYPE_START + MONOGRAM.length * CHAR_INTERVAL + 700;
 
 // ─── Nav links ───────────────────────────────────────────────────────────────
 const NAV_LINKS = ['Residences', 'Story', 'Listings', 'Inquire'] as const;
+
+// ─── Stats data ───────────────────────────────────────────────────────────────
+const STATS = [
+  { value: 200, prefix: '',  suffix: '+',  label: 'Properties Placed' },
+  { value: 50,  prefix: '$', suffix: 'M+', label: 'Total Volume' },
+  { value: 5,   prefix: '',  suffix: '+',  label: 'Years Active' },
+  { value: 98,  prefix: '',  suffix: '%',  label: 'Client Satisfaction' },
+] as const;
+
+// ─── Listings data ────────────────────────────────────────────────────────────
+interface Property {
+  id: number;
+  img: string;
+  address: string;
+  location: string;
+  price: string;
+  type: 'Sale' | 'Rent';
+  beds: number;
+  baths: number;
+  sqft: number;
+}
+
+const PROPERTIES: Property[] = [
+  {
+    id: 1,
+    img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+    address: 'Av. Álvarez Thomas 1420',
+    location: 'Palermo, Buenos Aires',
+    price: 'USD 480,000',
+    type: 'Sale',
+    beds: 3, baths: 2, sqft: 180,
+  },
+  {
+    id: 2,
+    img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80',
+    address: 'Juncal 3280, Piso 8',
+    location: 'Recoleta, Buenos Aires',
+    price: 'USD 1,250,000',
+    type: 'Sale',
+    beds: 4, baths: 3, sqft: 320,
+  },
+  {
+    id: 3,
+    img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+    address: 'Libertador 7850',
+    location: 'Núñez, Buenos Aires',
+    price: 'USD 3,800 / mo',
+    type: 'Rent',
+    beds: 2, baths: 2, sqft: 120,
+  },
+];
 
 // ─── Global CSS ───────────────────────────────────────────────────────────────
 const GLOBAL_STYLES = `
@@ -92,6 +143,192 @@ const GLOBAL_STYLES = `
     .hero-big      { font-size: clamp(1.9rem, 13vw, 4rem); letter-spacing: -0.025em; }
     .hero-live-in  { font-size: clamp(1rem, 5vw, 1.4rem); }
   }
+
+  /* ── Stats ───────────────────────────────────────────────── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  @media (min-width: 768px) {
+    .stat-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .stat-cell {
+    position: relative;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  /* Vertical gold divider between cells (not after last in each row) */
+  .stat-cell:not(:nth-child(2n))::after,
+  .stat-cell:not(:nth-child(2n)) + .stat-cell::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: ${ACCENT_GOLD}44;
+  }
+  @media (min-width: 768px) {
+    .stat-cell::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 20%;
+      height: 60%;
+      width: 1px;
+      background: ${ACCENT_GOLD}44;
+    }
+    .stat-cell:last-child::after { display: none; }
+    .stat-cell::before { display: none; }
+  }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    color: #fff;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .stat-prefix { color: ${ACCENT_GOLD}; }
+  .stat-suffix { color: ${ACCENT_GOLD}; font-size: 0.65em; vertical-align: super; margin-left: 1px; }
+
+  .stat-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-top: 0.6rem;
+  }
+
+  /* ── Listings ────────────────────────────────────────────── */
+  .listing-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    overflow: hidden;
+    transition: box-shadow 0.35s ease;
+  }
+  .listing-card:hover { box-shadow: 0 16px 56px rgba(28,27,24,0.12); }
+
+  .listing-img-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+  }
+  .listing-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.65s cubic-bezier(0.2, 0, 0.1, 1);
+  }
+  .listing-card:hover .listing-img-wrap img { transform: scale(1.06); }
+
+  .listing-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+    background: ${ACCENT_GOLD};
+    padding: 0.25rem 0.65rem;
+    border-radius: 2px;
+  }
+
+  .listing-body { padding: 1.4rem 1.5rem 1.6rem; flex: 1; display: flex; flex-direction: column; gap: 0.85rem; }
+
+  .listing-address {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+    font-weight: 700;
+    color: ${PRIMARY_BLACK};
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+
+  .listing-location {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    color: rgba(28,27,24,0.45);
+    letter-spacing: 0.04em;
+    margin-top: -0.5rem;
+  }
+
+  .listing-specs {
+    display: flex;
+    gap: 1.15rem;
+    align-items: center;
+    color: rgba(28,27,24,0.55);
+  }
+  .listing-spec {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+  }
+
+  .listing-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(28,27,24,0.08);
+    padding-top: 0.85rem;
+    margin-top: auto;
+  }
+
+  .listing-price {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1rem, 1.8vw, 1.1rem);
+    color: ${PRIMARY_BLACK};
+    letter-spacing: -0.02em;
+  }
+
+  .listing-cta {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: ${ACCENT_GOLD};
+    text-decoration: none;
+    transition: gap 0.22s ease;
+  }
+  .listing-cta:hover { gap: 0.55rem; }
+
+  /* Gold underline on listings section heading */
+  .section-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: ${ACCENT_GOLD};
+  }
+  .section-heading {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2rem, 4.5vw, 3.75rem);
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    color: ${PRIMARY_BLACK};
+  }
 `;
 
 // ─── MonogramDisplay ──────────────────────────────────────────────────────────
@@ -121,12 +358,12 @@ function FullscreenMenu({ open, onClose }: { open: boolean; onClose: () => void 
       style={{
         position:        'fixed',
         inset:           0,
-        zIndex:          40,          // below nav (z-50)
+        zIndex:          40,
         backgroundColor: '#fbfbf9',
         display:         'flex',
         flexDirection:   'column',
         justifyContent:  'center',
-        padding:         '6rem 7% 3rem', // 6rem top clears the nav bar
+        padding:         '6rem 7% 3rem',
         opacity:         open ? 1 : 0,
         pointerEvents:   open ? 'all' : 'none',
         transition:      'opacity 0.35s ease',
@@ -166,7 +403,6 @@ function FullscreenMenu({ open, onClose }: { open: boolean; onClose: () => void 
         ))}
       </nav>
 
-      {/* Bottom rule */}
       <div
         aria-hidden="true"
         style={{
@@ -183,6 +419,83 @@ function FullscreenMenu({ open, onClose }: { open: boolean; onClose: () => void 
   );
 }
 
+// ─── useCountUp ───────────────────────────────────────────────────────────────
+function useCountUp(target: number, duration: number, active: boolean): number {
+  const [count, setCount] = useState(0);
+  const rafRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (!active) return;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1);
+      // ease-out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(eased * target));
+      if (progress < 1) rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [active, target, duration]);
+
+  return count;
+}
+
+// ─── StatItem ─────────────────────────────────────────────────────────────────
+function StatItem({
+  value, prefix, suffix, label, active,
+}: { value: number; prefix: string; suffix: string; label: string; active: boolean }) {
+  const displayed = useCountUp(value, 1800, active);
+  return (
+    <div className="stat-cell">
+      <div className="stat-value">
+        {prefix && <span className="stat-prefix">{prefix}</span>}
+        {displayed}
+        {suffix && <span className="stat-suffix">{suffix}</span>}
+      </div>
+      <div className="stat-label">{label}</div>
+    </div>
+  );
+}
+
+// ─── PropertyCard ─────────────────────────────────────────────────────────────
+function PropertyCard({ p }: { p: Property }) {
+  return (
+    <article className="listing-card">
+      <div className="listing-img-wrap">
+        <img src={p.img} alt={p.address} loading="lazy" />
+        <span className="listing-badge">{p.type}</span>
+      </div>
+      <div className="listing-body">
+        <div>
+          <div className="listing-address">{p.address}</div>
+          <div className="listing-location">{p.location}</div>
+        </div>
+        <div className="listing-specs">
+          <span className="listing-spec">
+            <BedDouble size={13} strokeWidth={1.8} />
+            {p.beds} beds
+          </span>
+          <span className="listing-spec">
+            <Bath size={13} strokeWidth={1.8} />
+            {p.baths} baths
+          </span>
+          <span className="listing-spec">
+            <Maximize2 size={12} strokeWidth={1.8} />
+            {p.sqft} m²
+          </span>
+        </div>
+        <div className="listing-footer">
+          <span className="listing-price">{p.price}</span>
+          <a href="#inquire" className="listing-cta">
+            View <ArrowRight size={12} strokeWidth={2} />
+          </a>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
   // Preloader
@@ -192,12 +505,15 @@ export default function App() {
   const [cursorOn,   setCursorOn]   = useState(true);
 
   // Nav
-  const [menuOpen,     setMenuOpen]     = useState(false);
-  const [navOnDark,    setNavOnDark]    = useState(true);
-  const [scrolled,     setScrolled]     = useState(false);
-  const [btnHovered,   setBtnHovered]   = useState(false);
+  const [menuOpen,   setMenuOpen]   = useState(false);
+  const [navOnDark,  setNavOnDark]  = useState(true);
+  const [scrolled,   setScrolled]   = useState(false);
+  const [btnHovered, setBtnHovered] = useState(false);
 
-  const heroRef = useRef<HTMLElement>(null);
+  // Stats
+  const [statsActive, setStatsActive] = useState(false);
+  const statsRef = useRef<HTMLElement>(null);
+  const heroRef  = useRef<HTMLElement>(null);
 
   // ── Preloader timers ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -235,6 +551,18 @@ export default function App() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // ── Stats IntersectionObserver ────────────────────────────────────────────
+  useEffect(() => {
+    const el = statsRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setStatsActive(true); obs.disconnect(); } },
+      { threshold: 0.3 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   // ── Lock body scroll when menu open ──────────────────────────────────────
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
@@ -252,10 +580,7 @@ export default function App() {
   const typingDone      = typedCount >= MONOGRAM.length;
   const effectivelyDark = navOnDark && !menuOpen;
   const navColor        = effectivelyDark ? '#ffffff' : PRIMARY_BLACK;
-  const logoSrc         = effectivelyDark ? LOGO_LIGHT : LOGO_DARK;
-
-  // Top hamburger line width: 28px default, 20px on hover (closed), 28px when open (X)
-  const topLineW = menuOpen ? '28px' : (btnHovered ? '20px' : '28px');
+  const topLineW        = menuOpen ? '28px' : (btnHovered ? '20px' : '28px');
 
   return (
     <>
@@ -267,20 +592,20 @@ export default function App() {
       {!liftDone && (
         <div
           style={{
-            position:       'fixed',
-            inset:          0,
-            zIndex:         100,
+            position:        'fixed',
+            inset:           0,
+            zIndex:          100,
             backgroundColor: PRIMARY_BLACK,
-            display:        'flex',
-            flexDirection:  'column',
-            alignItems:     'center',
-            justifyContent: 'center',
-            gap:            '1.1rem',
-            willChange:     'transform',
-            transform:      lifting ? 'translateY(-100%)' : 'translateY(0%)',
-            transition:     lifting ? 'transform 1.5s cubic-bezier(0.45, 0, 0.15, 1)' : 'none',
-            pointerEvents:  lifting ? 'none' : 'all',
-            overflow:       'hidden',
+            display:         'flex',
+            flexDirection:   'column',
+            alignItems:      'center',
+            justifyContent:  'center',
+            gap:             '1.1rem',
+            willChange:      'transform',
+            transform:       lifting ? 'translateY(-100%)' : 'translateY(0%)',
+            transition:      lifting ? 'transform 1.5s cubic-bezier(0.45, 0, 0.15, 1)' : 'none',
+            pointerEvents:   lifting ? 'none' : 'all',
+            overflow:        'hidden',
           }}
         >
           {/* Film grain */}
@@ -386,10 +711,9 @@ export default function App() {
                 : 'transparent',
           backdropFilter:
             !menuOpen && scrolled && !navOnDark ? 'blur(14px)' : 'none',
-          // Reveal on lifting start, with brief delay
-          opacity:        lifting ? 1 : 0,
-          transform:      lifting ? 'translateY(0)' : 'translateY(-6px)',
-          transition:     [
+          opacity:    lifting ? 1 : 0,
+          transform:  lifting ? 'translateY(0)' : 'translateY(-6px)',
+          transition: [
             'background-color 0.4s ease',
             'backdrop-filter 0.4s ease',
             `opacity 0.5s ease ${lifting ? '0.25s' : '0s'}`,
@@ -397,15 +721,16 @@ export default function App() {
           ].join(', '),
         }}
       >
-        {/* Logo */}
+        {/* Logo — single image, CSS filter inverts it to white on dark BG */}
         <a href="#" aria-label="1122 Living — home" style={{ display: 'flex', alignItems: 'center' }}>
           <img
-            src={logoSrc}
+            src={LOGO}
             alt="1122 Living"
             className="h-8 md:h-10 w-auto"
             style={{
               objectFit:  'contain',
-              transition: 'opacity 0.3s ease',
+              filter:     effectivelyDark ? 'brightness(0) invert(1)' : 'none',
+              transition: 'filter 0.3s ease',
             }}
           />
         </a>
@@ -428,7 +753,6 @@ export default function App() {
             alignItems:    'flex-end',
           }}
         >
-          {/* Top line */}
           <span
             style={{
               display:         'block',
@@ -441,7 +765,6 @@ export default function App() {
               transition:      'width 0.25s ease, transform 0.3s ease, background-color 0.25s ease',
             }}
           />
-          {/* Bottom line */}
           <span
             style={{
               display:         'block',
@@ -471,11 +794,10 @@ export default function App() {
           minHeight:      '100vh',
           display:        'flex',
           flexDirection:  'column',
-          justifyContent: 'flex-end',   // text anchored to bottom
+          justifyContent: 'flex-end',
           overflow:       'hidden',
         }}
       >
-        {/* Background image */}
         <div
           aria-hidden="true"
           style={{
@@ -488,7 +810,6 @@ export default function App() {
           }}
         />
 
-        {/* Gradient overlay — ensures legibility of dark text at bottom */}
         <div
           aria-hidden="true"
           style={{
@@ -506,14 +827,11 @@ export default function App() {
           }}
         />
 
-        {/* ── Text block — fades up as preloader lifts ── */}
         <div
           style={{
             position:  'relative',
             width:     '100%',
             padding:   '0 5% 5%',
-            // Triggered by `lifting`, not `liftDone`,
-            // so text appears while the overlay is still rising
             opacity:   lifting ? 1 : 0,
             transform: lifting ? 'translateY(0)' : 'translateY(28px)',
             transition: [
@@ -522,7 +840,6 @@ export default function App() {
             ].join(', '),
           }}
         >
-          {/* Row 1 */}
           <div
             style={{
               display:        'flex',
@@ -537,13 +854,90 @@ export default function App() {
               scope, and architectural finesse.
             </p>
           </div>
-
-          {/* Row 2 — fluid headline */}
           <span className="hero-big">IRREPLACEABLE</span>
         </div>
       </section>
 
-      {/* Sections 4-N added in subsequent steps */}
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 4 — Stats
+      ═══════════════════════════════════════════════════════════════════ */}
+      <section
+        id="story"
+        ref={statsRef}
+        style={{ backgroundColor: PRIMARY_BLACK }}
+      >
+        <div className="stat-grid">
+          {STATS.map(s => (
+            <StatItem
+              key={s.label}
+              value={s.value}
+              prefix={s.prefix}
+              suffix={s.suffix}
+              label={s.label}
+              active={statsActive}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════════
+          SECTION 5 — Featured Listings
+      ═══════════════════════════════════════════════════════════════════ */}
+      <section
+        id="listings"
+        style={{
+          backgroundColor: LIGHT_BEIGE,
+          padding:         'clamp(4rem, 8vw, 7rem) 5%',
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            display:        'flex',
+            justifyContent: 'space-between',
+            alignItems:     'flex-end',
+            marginBottom:   'clamp(2.5rem, 4vw, 3.5rem)',
+            gap:            '1.5rem',
+            flexWrap:       'wrap',
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+            <span className="section-eyebrow">Portfolio</span>
+            <h2 className="section-heading">Featured<br />Residences</h2>
+          </div>
+          <a
+            href="#listings"
+            style={{
+              fontFamily:     "'Inter', sans-serif",
+              fontSize:       '0.72rem',
+              fontWeight:     600,
+              letterSpacing:  '0.12em',
+              textTransform:  'uppercase',
+              color:          PRIMARY_BLACK,
+              textDecoration: 'none',
+              borderBottom:   `1px solid ${ACCENT_GOLD}`,
+              paddingBottom:  '2px',
+              whiteSpace:     'nowrap',
+              alignSelf:      'flex-end',
+            }}
+          >
+            View all listings
+          </a>
+        </div>
+
+        {/* Cards grid */}
+        <div
+          style={{
+            display:             'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))',
+            gap:                 '1.5rem',
+          }}
+        >
+          {PROPERTIES.map(p => <PropertyCard key={p.id} p={p} />)}
+        </div>
+      </section>
+
+      {/* Sections 6-N added in subsequent steps */}
     </>
   );
 }
